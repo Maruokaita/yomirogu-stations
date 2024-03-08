@@ -1,36 +1,56 @@
-import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-axios.get('https://app.swaggerhub.com/apis/INFO_3/BookReviewApplication/1.0.0')
-  .then(response => {
-    // レスポンスデータを処理するコードをここに記述
-    console.log('レスポンスデータ:', response.data);
-    // 他の処理を追加するか、必要に応じてデータを利用する処理をここに追加
-  })
-  .catch(error => {
-    console.error('リクエストエラー:', error);
-  });
+const InputForm = () => {
+  // フォームの状態を管理するためのuseStateフック
+  const [email, setEmail] = useState('');
+  // エラーメッセージの状態を管理するためのuseStateフック
+  const [errorMessage, setErrorMessage] = useState('');
 
-function App() {
+  // フォームの入力内容が変更されたときのハンドラ
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+    // 入力内容が変更されるたびにエラーメッセージをクリア
+    setErrorMessage('');
+  };
+
+  // メールアドレスの正規表現パターン
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // フォームが送信されたときのハンドラ
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // バリデーションなどを行う
+    if (!email) {
+      setErrorMessage('メールアドレスを入力してください');
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      setErrorMessage('正しいメールアドレスの形式で入力してください');
+      return;
+    }
+
+    // ここでフォームの内容を利用して何かを行う（例: バリデーション、APIへの送信など）
+    console.log('Submitted email:', email);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {/* エラーメッセージがあれば表示 */}
+      {errorMessage && <div style={{ color: 'red' }} class="error-message">{errorMessage}</div>}
+
+      <form onSubmit={handleSubmit}>
+        <label>
+          Email:
+          <input type="email" value={email} onChange={handleEmailChange} />
+        </label>
+        <button type="submit" class="submit">Submit</button>
+      </form>
     </div>
   );
-}
+};
 
-export default App;
+export default InputForm;
+
